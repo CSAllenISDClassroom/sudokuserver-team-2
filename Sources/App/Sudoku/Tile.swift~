@@ -1,0 +1,14 @@
+class Tile {
+    var value : Int? = nil
+    var possibleValues : [Int] = []
+    
+    let row : Row
+    let column : Column
+    let group : Group
+
+    Tile(row, column, group) {
+        self.row = row
+        self.column = column
+        self.group = group
+    }
+}

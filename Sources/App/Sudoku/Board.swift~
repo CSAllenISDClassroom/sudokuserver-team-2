@@ -1,0 +1,35 @@
+class Board {
+    let board : [[Tile]]
+    let rows : [Row]
+    let columns : [Column]
+    let groups : [Group]
+
+    init() {
+        self.board = [
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()],
+          [Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile(),Tile()]
+        ]
+        var rows : [Row] = []
+        var columns : [Column] = []
+        var groups : [Group] = []
+        // prepare rows and columns
+        for y in 0..<board.count {
+            var rowTmp = []
+            var columnTmp = []
+            for x in 0..<board[y].count {
+                rowTmp.append(self.board[y][x])
+                columnTmp.append(self.board[x][y])
+            }
+            rows.append(Row(tiles:rowTmp))
+            columns.append(Column(tiles:columnTmp))
+        }
+        // prepare groups
+    }
+}
