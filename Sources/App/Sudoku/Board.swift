@@ -198,4 +198,21 @@ public class Board {
         }
         return s
     }
+
+    public func toJSON() -> String {
+        var s : String = "{\"cells\":["
+        for y in 0..<self.board.count {
+            s += "["
+            for x in 0..<self.board[y].count {
+                let tile = self.board[y][x]
+                if tile.value == nil {s += "null"}
+                else {s += String(tile.value!)}
+                if x != self.board[y].count-1 {s += ","}
+            }
+            if y == self.board.count-1 {s += "]"}
+            else {s += "],"}
+        }
+        s += "]}"
+        return s
+    }
 }
