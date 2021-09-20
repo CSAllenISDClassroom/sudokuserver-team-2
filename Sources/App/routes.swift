@@ -10,15 +10,19 @@ func routes(_ app: Application) throws {
     app.post("games") { req -> Response in
         games.append(Board(difficulty:Difficulty.medium))
         let body = "{\"boardID\":\(games.count-1)}"
+        var headers = HTTPHeaders()
+        headers.add(name: .contentType, value:"application/json")
         return Response(status:HTTPResponseStatus.created,
-                        headers:HTTPHeaders(),
+                        headers:headers,
                         body:Response.Body(string:body))
     }
 
     app.get("games", ":id", "cells") { req -> Response in
         let body = games[Int(req.parameters.get("id")!)!].toJSON()
+        var headers = HTTPHeaders()
+        headers.add(name: .contentType, value:"application/json")
         return Response(status:HTTPResponseStatus.ok,
-                        headers:HTTPHeaders(),
+                        headers:headers,
                         body:Response.Body(string:body))
     }
 
@@ -36,7 +40,6 @@ func routes(_ app: Application) throws {
             validMove = games[id].insertNumber(xPos:pos.0, yPos:pos.1, number:inputValue)
         }
         if !validMove {print("Invalid move. no change to board state.")}
-        return Response(status:HTTPResponseStatus.noContent,
-                        headers:HTTPHeaders())
+        return Response(status:HTTPResponseStatus.noContent)
     }
 }
