@@ -16,6 +16,7 @@ public class Board {
             return false
         }
         self.board[yPos][xPos].value = number
+        print("-------------------------\n\(toString())-------------------------")
         return true
     }
 
@@ -26,6 +27,7 @@ public class Board {
             return false
         }
         self.board[yPos][xPos].value = nil
+        print("-------------------------\n\(toString())-------------------------")
         return true
     }
     
@@ -91,6 +93,7 @@ public class Board {
         }
         removeBoardNums()
         print("Board built. Took \(totalBoardGens) attempts.")
+        print(toString())
         // cp to original board
         for y in 0..<self.board.count {
             for x in 0..<self.board[y].count {
@@ -200,19 +203,31 @@ public class Board {
     }
 
     public func toJSON() -> String {
+        let board = convertBoardToBC()
         var s : String = "{\"cells\":["
-        for y in 0..<self.board.count {
+        for b in 0..<board.count {
             s += "["
-            for x in 0..<self.board[y].count {
-                let tile = self.board[y][x]
+            for c in 0..<board[b].count {
+                let tile = board[b][c]
                 if tile.value == nil {s += "null"}
                 else {s += String(tile.value!)}
-                if x != self.board[y].count-1 {s += ","}
+                if c != board[b].count-1 {s += ","}
             }
-            if y == self.board.count-1 {s += "]"}
+            if b == board.count-1 {s += "]"}
             else {s += "],"}
         }
         s += "]}"
         return s
+    }
+
+    private func convertBoardToBC() -> [[OTile]] {
+        var res : [[OTile]] = Array(repeating:Array(repeating:OTile(), count:9), count:9)
+        for b in 0..<res.count {
+            for c in 0..<res[b].count {
+                let pos = BCtoXY(b:b,c:c)
+                res[b][c].value = self.board[pos.1][pos.0].value
+            }
+        }
+        return res
     }
 }
