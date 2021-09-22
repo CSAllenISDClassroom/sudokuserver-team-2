@@ -12,22 +12,18 @@ public class Board {
     // insertNumber() returns true if insert position is valid (no number already there & no similar number in row/column/group), and false if position is invalid
     public func insertNumber(xPos:Int, yPos:Int, number:Int) -> Bool {
         guard self.board[yPos][xPos].value == nil && validInsertPosition(xPos:xPos, yPos:yPos, number:number) else {
-            print("no change")
             return false
         }
         self.board[yPos][xPos].value = number
-        print("-------------------------\n\(toString())-------------------------")
         return true
     }
 
     // removeNumber returns true if remove position is valid (player-inserted number there), and false if position is invalid
     public func removeNumber(xPos:Int, yPos:Int) -> Bool {
         guard self.board[yPos][xPos].value != nil && self.originalBoard[yPos][xPos].value == nil else {
-            print("no change (\(self.board[yPos][xPos].value != nil), \(self.originalBoard[yPos][xPos].value))")
             return false
         }
         self.board[yPos][xPos].value = nil
-        print("-------------------------\n\(toString())-------------------------")
         return true
     }
     
@@ -79,7 +75,6 @@ public class Board {
         self.columns = columns
         self.groups = groups
         // build board
-        print("Building board...")
         while true {
             do {
                 self.totalBoardGens += 1
@@ -92,8 +87,7 @@ public class Board {
             }
         }
         removeBoardNums()
-        print("Board built. Took \(totalBoardGens) attempts.")
-        print(toString())
+        print("New board built. Took \(totalBoardGens) attempts.")
         // cp to original board
         for y in 0..<self.board.count {
             for x in 0..<self.board[y].count {
