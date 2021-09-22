@@ -18,6 +18,7 @@ func routes(_ app: Application) throws {
     }
 
     app.get("games", ":id", "cells") { req -> Response in
+        // there should probably be a handler here to check the game id but we didnt do that our bad
         let body = games[Int(req.parameters.get("id")!)!].toJSON()
         var headers = HTTPHeaders()
         headers.add(name: .contentType, value:"application/json")
@@ -31,11 +32,10 @@ func routes(_ app: Application) throws {
               let boxIndex : Int = req.parameters.get("boxIndex"),
               let cellIndex : Int = req.parameters.get("cellIndex")
         else {
-            fatalError("theres probably a better way to handle this.")
+            return Response(status:HTTPResponseStatus.badRequest)
         }
         let pos = BCtoXY(b:boxIndex, c:cellIndex)
         var validMove : Bool = games[id].removeNumber(xPos:pos.0, yPos:pos.1)
-        (try req.content.decode(InputValue.self).inputValue)
         if let inputValue = try req.content.decode(InputValue.self).inputValue {
             validMove = games[id].insertNumber(xPos:pos.0, yPos:pos.1, number:inputValue)
         }
