@@ -8,8 +8,20 @@ func routes(_ app: Application) throws {
     }
 
     app.post("games") { req -> Response in
-        print("[\(games.count)] ", terminator:"")
-        games.append(Board(difficulty:Difficulty.medium))
+        var setDifficulty = Difficulty.medium
+        do{
+            if let inputDifficulty = try req.content.decode(InputDifficulty.self).inputDifficulty { 
+                guard inputDifficulty == "easy" || inputDifficulty == "medium" || inputDifficulty == "hard" || inputDifficulty == "hell" else{
+                    return Response(status:.badRequest)
+                }
+                setDifficulty = toDifficulty(inputDifficulty:inputDifficulty)
+            }
+            
+        }catch{
+            print("[\(games.count)] No inputDifficulty received: Setting difficulty to medium (default)")
+        }
+        print("[\(games.count)] Difficulty:\(setDifficulty). ", terminator:"")
+        games.append(Board(difficulty:setDifficulty))
         let body = "{\"boardID\":\(games.count-1)}"
         var headers = HTTPHeaders()
         headers.add(name: .contentType, value:"application/json")
