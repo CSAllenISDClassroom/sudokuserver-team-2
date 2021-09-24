@@ -26,7 +26,8 @@ public class Board {
         self.board[yPos][xPos].value = nil
         return true
     }
-    
+
+    // Initializes the board with the proper difficulty, preparing one complete board for the server and removing cells to make an incomplete one for the client
     init(difficulty:Difficulty) {
         self.difficulty = difficulty
         self.board = [
@@ -96,10 +97,12 @@ public class Board {
         }
     }
 
+    // Determines if the number being inputted to a position is valid for the complete sudoku board
     private func validInsertPosition(xPos:Int, yPos:Int, number:Int) -> Bool {
         return !(rows[yPos].tiles.contains(where:{$0.value == number}) || columns[xPos].tiles.contains(where:{$0.value == number}) || xyToGroup(x:xPos, y:yPos).tiles.contains(where:{$0.value == number}))
     }
 
+    // Generates a random number for a random position on the board
     private func genBoardNums() throws {
         for y in 0..<board.count {
             for x in 0..<board[y].count {
@@ -117,6 +120,7 @@ public class Board {
         }
     }
 
+    // Removes random numbers from the board depending on the difficulty to make an incomplete board
     private func removeBoardNums() {
         // amount to remove
         let count : Int
