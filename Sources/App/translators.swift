@@ -25,11 +25,11 @@ public func toDifficulty(inputDifficulty:String) -> Difficulty{
 }
 
 public struct InputValue : Content {
-    var inputValue : Int?
+    var value : Int?
 }
 
 public struct InputDifficulty : Content {
-    var inputDifficulty : String?
+    var difficulty : String?
     
 }
 

@@ -10,7 +10,7 @@ func routes(_ app: Application) throws {
     app.post("games") { req -> Response in
         var setDifficulty = Difficulty.medium
         do{
-            if let inputDifficulty = try req.content.decode(InputDifficulty.self).inputDifficulty { 
+            if let inputDifficulty = try req.content.decode(InputDifficulty.self).difficulty { 
                 guard inputDifficulty == "easy" || inputDifficulty == "medium" || inputDifficulty == "hard" || inputDifficulty == "hell" else{
                     return Response(status:.badRequest)
                 }
@@ -58,7 +58,7 @@ func routes(_ app: Application) throws {
         var input : Int? = nil
         let pos = BCtoXY(b:boxIndex, c:cellIndex)
         var validMove : Bool = games[id].removeNumber(xPos:pos.0, yPos:pos.1)
-        if let inputValue = try req.content.decode(InputValue.self).inputValue {
+        if let inputValue = try req.content.decode(InputValue.self).value {
             guard inputValue >= 1 && inputValue <= 9 else {
                 return Response(status:.badRequest)
             }
