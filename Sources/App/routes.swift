@@ -16,7 +16,7 @@ func routes(_ app: Application) throws {
         }
         print("[\(games.count)] Difficulty:\(setDifficulty). ", terminator:"")
         games.append(Board(difficulty:setDifficulty))
-        let body = "{\"boardID\":\(games.count-1)}"
+        let body = "{\"id\":\(games.count-1)}"
         var headers = HTTPHeaders()
         headers.add(name: .contentType, value:"application/json")
         return Response(status:HTTPResponseStatus.created,

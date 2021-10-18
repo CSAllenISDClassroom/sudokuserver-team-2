@@ -202,17 +202,19 @@ public class Board {
 
     public func toJSON() -> String {
         let board = convertBoardToBC()
-        var s : String = "{\"cells\":["
+        var s : String = "{\"board\":["
         for b in 0..<board.count {
-            s += "["
+            s += "{\"cells\":["
             for c in 0..<board[b].count {
+                s += "{\"position\":{\"boxIndex\":\(b),\"cellIndex\":\(c)},\"value\":"
                 let tile = board[b][c]
                 if tile.value == nil {s += "null"}
                 else {s += String(tile.value!)}
-                if c != board[b].count-1 {s += ","}
+                if c != board[b].count-1 {s += "},"}
+                else {s += "}"}
             }
-            if b == board.count-1 {s += "]"}
-            else {s += "],"}
+            if b == board.count-1 {s += "]}"}
+            else {s += "]},"}
         }
         s += "]}"
         return s
