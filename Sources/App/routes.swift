@@ -8,17 +8,11 @@ func routes(_ app: Application) throws {
     }
 
     app.post("games") { req -> Response in
-        var setDifficulty = Difficulty.medium
-        do{
-            if let inputDifficulty = try req.content.decode(InputDifficulty.self).difficulty { 
-                guard inputDifficulty == "easy" || inputDifficulty == "medium" || inputDifficulty == "hard" || inputDifficulty == "hell" else{
-                    return Response(status:.badRequest)
-                }
-                setDifficulty = toDifficulty(inputDifficulty:inputDifficulty)
-            }
-            
-        }catch{
-            print("[\(games.count)] No inputDifficulty received: Setting difficulty to medium (default)")
+        let inputDifficulty: String? = req.query["difficulty"]
+        guard let inputDifficulty = inputDifficulty,
+              inputDifficulty == "easy" || inputDifficulty == "medium" || inputDifficulty == "hard" || inputDifficulty == "hell",
+              let setDifficulty = toDifficulty(inputDifficulty:inputDifficulty) else{
+            return Response(status:.badRequest)
         }
         print("[\(games.count)] Difficulty:\(setDifficulty). ", terminator:"")
         games.append(Board(difficulty:setDifficulty))

@@ -6,8 +6,8 @@ public func BCtoXY(b:Int, c:Int) -> (Int, Int) {
     return (x, y)
 }
 
-public func toDifficulty(inputDifficulty:String) -> Difficulty{
-    var returnValue : Difficulty
+public func toDifficulty(inputDifficulty:String) -> Difficulty? {
+    var returnValue : Difficulty?
     switch inputDifficulty {
     case "easy":
         returnValue = Difficulty.easy
@@ -18,7 +18,7 @@ public func toDifficulty(inputDifficulty:String) -> Difficulty{
     case "hell":
         returnValue = Difficulty.hell
     default:
-        returnValue = Difficulty.medium
+        returnValue = nil
         print("Reached default difficulty switch case: Setting Difficulty to medium")
     }
     return returnValue
