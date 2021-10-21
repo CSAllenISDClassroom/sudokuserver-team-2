@@ -7,11 +7,12 @@ public class Board {
     public let difficulty : Difficulty
 
     private var originalBoard : [[OTile]] = Array(repeating:Array(repeating:OTile(), count:9), count:9)
+    private var correctBoard : [[OTile]] = Array(repeating:Array(repeating:OTile(), count:9), count:9)
     private var totalBoardGens = 0
 
     // insertNumber() returns true if insert position is valid (no number already there & no similar number in row/column/group), and false if position is invalid
     public func insertNumber(xPos:Int, yPos:Int, number:Int) -> Bool {
-        guard self.board[yPos][xPos].value == nil && validInsertPosition(xPos:xPos, yPos:yPos, number:number) else {
+        guard self.board[yPos][xPos].value == nil /*&& validInsertPosition(xPos:xPos, yPos:yPos, number:number)*/ else {
             return false
         }
         self.board[yPos][xPos].value = number
@@ -85,6 +86,12 @@ public class Board {
                 resetBoard()
             } catch {
                 print("Unexpected error: \(error)")
+            }
+        }
+        // cp to correct board
+        for y in 0..<self.board.count {
+            for x in 0..<self.board[y].count {
+                self.correctBoard[y][x].value = self.board[y][x].value
             }
         }
         removeBoardNums()
@@ -200,24 +207,48 @@ public class Board {
         return s
     }
 
-    public func toJSON() -> String {
+    public func toJSON(filter:Filter) -> String {
         let board = convertBoardToBC()
         var s : String = "{\"board\":["
         for b in 0..<board.count {
             s += "{\"cells\":["
+            var addedACell = false
             for c in 0..<board[b].count {
-                s += "{\"position\":{\"boxIndex\":\(b),\"cellIndex\":\(c)},\"value\":"
                 let tile = board[b][c]
+                let pos = BCtoXY(b:b,c:c)
+                if shouldBeFiltered(filter:filter, xPos:pos.0, yPos:pos.1) {continue}
+                s += "{\"position\":{\"boxIndex\":\(b),\"cellIndex\":\(c)},\"value\":"
                 if tile.value == nil {s += "null"}
                 else {s += String(tile.value!)}
-                if c != board[b].count-1 {s += "},"}
-                else {s += "}"}
+                s += "},"
+                addedACell = true
             }
+            if addedACell { s = String(s[...s.index(s.endIndex, offsetBy:-2)]) }
             if b == board.count-1 {s += "]}"}
             else {s += "]},"}
         }
         s += "]}"
         return s
+    }
+
+    // Returns true if cell shouldn't be included in JSON output
+    private func shouldBeFiltered(filter:Filter, xPos:Int, yPos:Int) -> Bool {
+        var retVal : Bool
+        switch filter {
+        case Filter.all:
+            retVal = false
+        case Filter.repeated:
+            let repeatRowValues = Dictionary(grouping:rows[yPos].tiles, by:{$0.value}).filter{ $1.count > 1 }.keys.filter{$0 != nil}
+            let repeatColumnValues = Dictionary(grouping:columns[xPos].tiles, by:{$0.value}).filter{ $1.count > 1 }.keys.filter{$0 != nil}
+            let repeatGroupValues = Dictionary(grouping:xyToGroup(x:xPos,y:yPos).tiles, by:{$0.value}).filter{ $1.count > 1 }.keys.filter{$0 != nil}
+            retVal = (repeatRowValues.count >= 1 && repeatRowValues.contains(self.board[yPos][xPos].value)) ||
+              (repeatColumnValues.count >= 1 && repeatColumnValues.contains(self.board[yPos][xPos].value)) ||
+              (repeatGroupValues.count >= 1 && repeatGroupValues.contains(self.board[yPos][xPos].value))
+            retVal = !retVal
+        case Filter.incorrect:
+            retVal = self.board[yPos][xPos].value == self.correctBoard[yPos][xPos].value || self.board[yPos][xPos].value == nil
+        }
+        return retVal
     }
 
     private func convertBoardToBC() -> [[OTile]] {

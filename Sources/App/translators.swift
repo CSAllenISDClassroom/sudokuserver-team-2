@@ -19,7 +19,23 @@ public func toDifficulty(inputDifficulty:String) -> Difficulty? {
         returnValue = Difficulty.hell
     default:
         returnValue = nil
-        print("Reached default difficulty switch case: Setting Difficulty to medium")
+        print("Reached default difficulty switch case.")
+    }
+    return returnValue
+}
+
+public func toFilter(inputFilter:String) -> Filter? {
+    var returnValue : Filter?
+    switch inputFilter {
+    case "all":
+        returnValue = Filter.all
+    case "repeated":
+        returnValue = Filter.repeated
+    case "incorrect":
+        returnValue = Filter.incorrect
+    default:
+        returnValue = nil
+        print("Reached default filter switch case.")
     }
     return returnValue
 }

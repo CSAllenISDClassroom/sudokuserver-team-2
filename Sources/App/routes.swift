@@ -25,13 +25,17 @@ func routes(_ app: Application) throws {
     }
 
     app.get("games", ":id", "cells") { req -> Response in
-        guard let id : Int = req.parameters.get("id"),
+        let inputFilter : String? = req.query["filter"]
+        guard let inputFilter = inputFilter,
+              inputFilter == "all" || inputFilter == "repeated" || inputFilter == "incorrect",
+              let setFilter = toFilter(inputFilter:inputFilter),
+              let id : Int = req.parameters.get("id"),
               id < games.count && id >= 0
         else {
             return Response(status:HTTPResponseStatus.badRequest)
         }
         print("[\(id)] Client is requsting board state.")
-        let body = games[id].toJSON()
+        let body = games[id].toJSON(filter:setFilter)
         var headers = HTTPHeaders()
         headers.add(name: .contentType, value:"application/json")
         return Response(status:HTTPResponseStatus.ok,
