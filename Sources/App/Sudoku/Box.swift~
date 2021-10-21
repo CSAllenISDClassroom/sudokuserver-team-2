@@ -1,7 +1,0 @@
-public class Box {
-    public let tiles : [Tile]
-
-    init(tiles:[Tile]) {
-        self.tiles = tiles
-    }
-}

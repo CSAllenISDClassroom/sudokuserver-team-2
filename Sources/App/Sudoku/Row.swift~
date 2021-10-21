@@ -1,7 +1,0 @@
-class Row {
-    let tiles : [Tile]
-
-    init([Tile]:tiles) {
-        self.tiles = tiles
-    }
-}
