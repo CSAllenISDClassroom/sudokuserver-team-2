@@ -1,5 +1,5 @@
 public class Tile : CustomStringConvertible {
     public var value : Int? = nil
     public var possibleValues : [Int] = []
-    public var description : String {return "Tile:\(value)"}
+    public var description : String {return "Tile:\(String(describing:value))"}
 }
